@@ -17,6 +17,14 @@ const userValidationSchema = Joi.object({
     role: Joi.string().valid('admin', 'user', 'quest').default('user')
 })
 
+const updateUserValidationSchema = Joi.object({
+    fullName: Joi.string().trim().optional(),
+    username: Joi.string().lowercase().trim().optional(),
+    email: Joi.string().email().lowercase().trim().optional(),
+
+})
+
 module.exports = {
-    userValidationSchema
+    userValidationSchema,
+    updateUserValidationSchema
 }

@@ -7,7 +7,6 @@ const { logger } = require("../../common/utils/logger");
 const { UserModel } = require("../user/user.model");
 const PendingOrderModel = require("./pending-order.model");
 const { OrderMessages } = require("./order.messages");
-const { default: mongoose } = require("mongoose");
 class OrderController{
     constructor() {
         autoBind(this)

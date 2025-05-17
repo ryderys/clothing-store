@@ -6,7 +6,7 @@ const CartModel = require("../cart/cart.model");
 const OrderModel = require("../orders/orders.model");
 const PendingOrderModel = require("../orders/pending-order.model");
 const { logger } = require("../../common/utils/logger");
-const { userValidationSchema } = require("../../common/validations/user.validation");
+const { userValidationSchema, updateUserValidationSchema } = require("../../common/validations/user.validation");
 const { UserMessages } = require("./user.messages");
 
 class UserController{
@@ -27,22 +27,35 @@ class UserController{
             next(error)
         }
     }
+    
     async updateUserProfile(req, res, next){
         try {
             const userId = req.user._id;
-            await userValidationSchema.validateAsync(req.body)
-            const data = {... req.body};
-            delete data.role
+            await updateUserValidationSchema.validateAsync(req.body)
+            const data = {...req.body};
+            const allowedFields = ["fullname", "username", "email"]
+            const dataToUpdate = Object.keys(data)
+            .filter(field => allowedFields.includes(field))
+            .reduce((obj, field) => {
+                obj[field] = data[field]
+                return obj
+            }, {})
 
-            const {modifiedCount} = await UserModel.updateOne({_id: userId}, {$set: data})
-            if(!modifiedCount) throw new httpError.InternalServerError(UserMessages.UpdateFailed)
+            if(Object.keys(dataToUpdate).length === 0){
+                throw new httpError.BadRequest(UserMessages.UpdateFailed)
+            }
 
-            await this.processPendingOrder(userId)
+           const result = await UserModel.findByIdAndUpdate(userId, {$set: dataToUpdate}, {new: true})
+           if(!result) {
+                throw new httpError.InternalServerError(UserMessages.UpdateFailed)
+           }
+            // await this.processPendingOrder(userId)
 
             return res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,
                 data: {
                     message: UserMessages.ProfileUpdated,
+                    user: result
                 }
         })
 
