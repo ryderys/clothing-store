@@ -8,7 +8,7 @@ const sampleUsers = [
     {
         fullName: "Admin User",
         username: "admin",
-        email: "admin@example.com",
+        email: "admin@clothingstore.com",
         mobile: "1234567890",
         verifiedMobile: true,
         role: "admin"
@@ -16,92 +16,92 @@ const sampleUsers = [
     {
         fullName: "Super Admin",
         username: "superadmin",
-        email: "superadmin@example.com",
+        email: "superadmin@clothingstore.com",
         mobile: "1234567891",
         verifiedMobile: true,
         role: "admin"
     },
-    // Audio suppliers
+    // Men's clothing suppliers
     {
-        fullName: "John Audio Supplier",
-        username: "johnaudio",
-        email: "john@audio.com",
+        fullName: "John Clothing Supplier",
+        username: "johnclothing",
+        email: "john@clothing.com",
         mobile: "1234567892",
         verifiedMobile: true,
         role: "user"
     },
     {
-        fullName: "Sarah Speaker Supplier",
-        username: "sarahspeaker",
-        email: "sarah@speaker.com",
+        fullName: "Sarah Casual Wear",
+        username: "sarahcasual",
+        email: "sarah@casual.com",
         mobile: "1234567893",
         verifiedMobile: true,
         role: "user"
     },
-    // Wearable suppliers
+    // Women's clothing suppliers
     {
-        fullName: "Mike Watch Supplier",
-        username: "mikewatch",
-        email: "mike@watch.com",
+        fullName: "Mike Fashion House",
+        username: "mikefashion",
+        email: "mike@fashion.com",
         mobile: "1234567894",
         verifiedMobile: true,
         role: "user"
     },
     {
-        fullName: "Lisa Fitness Supplier",
-        username: "lisafitness",
-        email: "lisa@fitness.com",
+        fullName: "Lisa Denim Co",
+        username: "lisadenim",
+        email: "lisa@denim.com",
         mobile: "1234567895",
         verifiedMobile: true,
         role: "user"
     },
-    // Computer suppliers
+    // Accessories suppliers
     {
-        fullName: "David Laptop Supplier",
-        username: "davidlaptop",
-        email: "david@laptop.com",
+        fullName: "David Accessories",
+        username: "davidaccessories",
+        email: "david@accessories.com",
         mobile: "1234567896",
         verifiedMobile: true,
         role: "user"
     },
     {
-        fullName: "Emma Desktop Supplier",
-        username: "emmadesktop",
-        email: "emma@desktop.com",
+        fullName: "Emma Luxury Goods",
+        username: "emmaluxury",
+        email: "emma@luxury.com",
         mobile: "1234567897",
         verifiedMobile: true,
         role: "user"
     },
-    // Gaming suppliers
+    // Footwear suppliers
     {
-        fullName: "Alex Gaming Supplier",
-        username: "alexgaming",
-        email: "alex@gaming.com",
+        fullName: "Alex Shoes",
+        username: "alexshoes",
+        email: "alex@shoes.com",
         mobile: "1234567898",
         verifiedMobile: true,
         role: "user"
     },
     {
-        fullName: "Sophie Accessories Supplier",
-        username: "sophieaccessories",
-        email: "sophie@accessories.com",
+        fullName: "Sophie Footwear",
+        username: "sophieshoes",
+        email: "sophie@shoes.com",
         mobile: "1234567899",
         verifiedMobile: true,
         role: "user"
     },
-    // Regular users
+    // Regular customers
     {
-        fullName: "Regular User 1",
-        username: "user1",
-        email: "user1@example.com",
+        fullName: "Regular Customer 1",
+        username: "customer1",
+        email: "customer1@example.com",
         mobile: "1234567900",
         verifiedMobile: true,
         role: "user"
     },
     {
-        fullName: "Regular User 2",
-        username: "user2",
-        email: "user2@example.com",
+        fullName: "Regular Customer 2",
+        username: "customer2",
+        email: "customer2@example.com",
         mobile: "1234567901",
         verifiedMobile: true,
         role: "user"
@@ -126,16 +126,16 @@ const seedUsers = async () => {
         return {
             admin: users[0]._id,
             superAdmin: users[1]._id,
-            johnAudio: users[2]._id,
-            sarahSpeaker: users[3]._id,
-            mikeWatch: users[4]._id,
-            lisaFitness: users[5]._id,
-            davidLaptop: users[6]._id,
-            emmaDesktop: users[7]._id,
-            alexGaming: users[8]._id,
-            sophieAccessories: users[9]._id,
-            regularUser1: users[10]._id,
-            regularUser2: users[11]._id
+            johnClothing: users[2]._id,
+            sarahCasual: users[3]._id,
+            mikeFashion: users[4]._id,
+            lisaDenim: users[5]._id,
+            davidAccessories: users[6]._id,
+            emmaLuxury: users[7]._id,
+            alexShoes: users[8]._id,
+            sophieShoes: users[9]._id,
+            customer1: users[10]._id,
+            customer2: users[11]._id
         };
 
     } catch (error) {

@@ -17,161 +17,161 @@ const seedProducts = async () => {
         console.log('Categories and users seeded successfully');
 
         const sampleProducts = [
-            // Audio Products
+            // Men's Clothing
             {
-                title: "Premium Wireless Headphones",
-                summary: "High-quality wireless headphones with noise cancellation",
-                description: "Experience crystal-clear sound with our premium wireless headphones. Features include active noise cancellation, 30-hour battery life, and comfortable over-ear design.",
-                tags: ["electronics", "audio", "wireless"],
-                category: categoryIds.headphones,
-                supplier: userIds.johnAudio,
-                price: 199.99,
-                count: 50,
-                images: ["headphones-1.jpg", "headphones-2.jpg"],
+                title: "Classic Fit Dress Shirt",
+                summary: "Premium cotton dress shirt with a comfortable classic fit",
+                description: "A timeless dress shirt made from high-quality cotton. Features a button-down collar, single chest pocket, and a comfortable classic fit that's perfect for both formal and casual occasions.",
+                tags: ["men", "formal", "shirts"],
+                category: categoryIds.mensShirts,
+                supplier: userIds.johnClothing,
+                price: 49.99,
+                count: 100,
+                images: ["dress-shirt-1.jpg", "dress-shirt-2.jpg"],
                 features: {
-                    batteryLife: "30 hours",
-                    connectivity: "Bluetooth 5.0",
-                    noiseCancellation: "Active",
-                    weight: "250g"
+                    material: "100% Premium Cotton",
+                    fit: "Classic Fit",
+                    collar: "Button-down",
+                    care: "Machine washable"
                 },
                 averageRating: 4.5,
                 reviewCount: 120
             },
             {
-                title: "Bluetooth Speaker System",
-                summary: "Powerful portable Bluetooth speaker with deep bass",
-                description: "Enjoy your music anywhere with this powerful portable speaker. Features include 360-degree sound, waterproof design, and 20-hour battery life.",
-                tags: ["electronics", "audio", "speaker"],
-                category: categoryIds.speakers,
-                supplier: userIds.sarahSpeaker,
-                price: 149.99,
+                title: "Slim Fit Chino Pants",
+                summary: "Modern slim fit chinos in versatile colors",
+                description: "Contemporary slim fit chinos made from stretch cotton for comfort and mobility. Perfect for both casual and semi-formal occasions.",
+                tags: ["men", "pants", "casual"],
+                category: categoryIds.mensPants,
+                supplier: userIds.sarahCasual,
+                price: 59.99,
                 count: 75,
-                images: ["speaker-1.jpg", "speaker-2.jpg"],
+                images: ["chinos-1.jpg", "chinos-2.jpg"],
                 features: {
-                    power: "40W",
-                    batteryLife: "20 hours",
-                    waterproof: "IPX7",
-                    connectivity: ["Bluetooth 5.0", "AUX"]
+                    material: "98% Cotton, 2% Elastane",
+                    fit: "Slim Fit",
+                    closure: "Button and zip",
+                    pockets: "4 pockets"
                 },
                 averageRating: 4.3,
                 reviewCount: 85
             },
-            // Wearable Products
+            // Women's Clothing
             {
-                title: "Smart Fitness Watch",
-                summary: "Advanced fitness tracking smartwatch with heart rate monitor",
-                description: "Track your fitness goals with this advanced smartwatch. Features include heart rate monitoring, GPS tracking, sleep analysis, and water resistance up to 50m.",
-                tags: ["electronics", "fitness", "wearable"],
-                category: categoryIds.smartwatches,
-                supplier: userIds.mikeWatch,
-                price: 149.99,
-                count: 75,
-                images: ["watch-1.jpg", "watch-2.jpg"],
+                title: "Floral Summer Dress",
+                summary: "Light and breezy floral print dress for summer",
+                description: "A beautiful floral print dress perfect for summer days. Features a flattering A-line silhouette and comfortable elastic waistband.",
+                tags: ["women", "dresses", "summer"],
+                category: categoryIds.womensDresses,
+                supplier: userIds.mikeFashion,
+                price: 69.99,
+                count: 50,
+                images: ["floral-dress-1.jpg", "floral-dress-2.jpg"],
                 features: {
-                    display: "1.4 inch AMOLED",
-                    batteryLife: "7 days",
-                    waterResistance: "50m",
-                    sensors: ["Heart Rate", "GPS", "Accelerometer"]
-                },
-                averageRating: 4.3,
-                reviewCount: 85
-            },
-            {
-                title: "Fitness Activity Tracker",
-                summary: "Lightweight fitness tracker with advanced metrics",
-                description: "Monitor your daily activities with this lightweight fitness tracker. Features include step counting, calorie tracking, and sleep monitoring.",
-                tags: ["electronics", "fitness", "tracker"],
-                category: categoryIds.fitnessTrackers,
-                supplier: userIds.lisaFitness,
-                price: 79.99,
-                count: 100,
-                images: ["tracker-1.jpg", "tracker-2.jpg"],
-                features: {
-                    batteryLife: "14 days",
-                    waterResistance: "IP68",
-                    display: "OLED",
-                    sensors: ["Heart Rate", "SpO2"]
-                },
-                averageRating: 4.2,
-                reviewCount: 65
-            },
-            // Computer Products
-            {
-                title: "Gaming Laptop Pro",
-                summary: "High-performance gaming laptop with RTX graphics",
-                description: "Experience gaming like never before with this powerful gaming laptop. Features include RTX graphics, high refresh rate display, and advanced cooling system.",
-                tags: ["electronics", "computer", "gaming"],
-                category: categoryIds.laptops,
-                supplier: userIds.davidLaptop,
-                price: 1499.99,
-                count: 25,
-                images: ["laptop-1.jpg", "laptop-2.jpg"],
-                features: {
-                    processor: "Intel i7-12700H",
-                    graphics: "RTX 3070",
-                    ram: "16GB DDR4",
-                    storage: "1TB NVMe SSD"
+                    material: "Polyester Blend",
+                    fit: "A-line",
+                    length: "Knee-length",
+                    care: "Machine wash cold"
                 },
                 averageRating: 4.7,
-                reviewCount: 45
+                reviewCount: 95
             },
             {
-                title: "Professional Workstation",
-                summary: "Powerful desktop workstation for professionals",
-                description: "Boost your productivity with this professional workstation. Features include powerful CPU, high-end graphics, and expandable storage.",
-                tags: ["electronics", "computer", "workstation"],
-                category: categoryIds.desktops,
-                supplier: userIds.emmaDesktop,
-                price: 1999.99,
-                count: 15,
-                images: ["desktop-1.jpg", "desktop-2.jpg"],
-                features: {
-                    processor: "AMD Ryzen 9",
-                    graphics: "RTX 3080",
-                    ram: "32GB DDR4",
-                    storage: "2TB NVMe SSD"
-                },
-                averageRating: 4.8,
-                reviewCount: 30
-            },
-            // Gaming Products
-            {
-                title: "Next-Gen Gaming Console",
-                summary: "Latest gaming console with 4K gaming support",
-                description: "Experience next-gen gaming with this powerful console. Features include 4K gaming, ray tracing, and fast loading times.",
-                tags: ["electronics", "gaming", "console"],
-                category: categoryIds.gamingConsoles,
-                supplier: userIds.alexGaming,
-                price: 499.99,
-                count: 40,
-                images: ["console-1.jpg", "console-2.jpg"],
-                features: {
-                    storage: "1TB SSD",
-                    resolution: "4K",
-                    rayTracing: true,
-                    backwardCompatibility: true
-                },
-                averageRating: 4.9,
-                reviewCount: 150
-            },
-            {
-                title: "Pro Gaming Mouse",
-                summary: "Professional gaming mouse with customizable buttons",
-                description: "Enhance your gaming performance with this professional gaming mouse. Features include customizable buttons, RGB lighting, and high-precision sensor.",
-                tags: ["electronics", "gaming", "accessories"],
-                category: categoryIds.gamingAccessories,
-                supplier: userIds.sophieAccessories,
+                title: "High-Waisted Jeans",
+                summary: "Stylish high-waisted jeans with stretch comfort",
+                description: "Modern high-waisted jeans with the perfect amount of stretch for all-day comfort. Features a classic five-pocket design and versatile wash.",
+                tags: ["women", "jeans", "denim"],
+                category: categoryIds.womensJeans,
+                supplier: userIds.lisaDenim,
                 price: 79.99,
                 count: 100,
-                images: ["mouse-1.jpg", "mouse-2.jpg"],
+                images: ["jeans-1.jpg", "jeans-2.jpg"],
                 features: {
-                    dpi: "25600",
-                    buttons: "8 programmable",
-                    lighting: "RGB",
-                    weight: "Adjustable"
+                    material: "98% Cotton, 2% Elastane",
+                    fit: "High-waisted",
+                    rise: "10 inches",
+                    style: "Skinny"
                 },
                 averageRating: 4.6,
-                reviewCount: 95
+                reviewCount: 150
+            },
+            // Accessories
+            {
+                title: "Leather Crossbody Bag",
+                summary: "Elegant leather crossbody bag with adjustable strap",
+                description: "A versatile leather crossbody bag that combines style and functionality. Features multiple compartments and an adjustable strap.",
+                tags: ["accessories", "bags", "leather"],
+                category: categoryIds.accessories,
+                supplier: userIds.davidAccessories,
+                price: 89.99,
+                count: 40,
+                images: ["crossbody-1.jpg", "crossbody-2.jpg"],
+                features: {
+                    material: "Genuine Leather",
+                    dimensions: "10\" x 7\" x 2\"",
+                    closure: "Magnetic snap",
+                    strap: "Adjustable"
+                },
+                averageRating: 4.8,
+                reviewCount: 65
+            },
+            {
+                title: "Silk Scarf",
+                summary: "Luxurious silk scarf with geometric pattern",
+                description: "A beautiful silk scarf featuring a modern geometric pattern. Perfect for adding a touch of elegance to any outfit.",
+                tags: ["accessories", "scarves", "silk"],
+                category: categoryIds.accessories,
+                supplier: userIds.emmaLuxury,
+                price: 49.99,
+                count: 60,
+                images: ["scarf-1.jpg", "scarf-2.jpg"],
+                features: {
+                    material: "100% Silk",
+                    dimensions: "35\" x 35\"",
+                    care: "Dry clean only",
+                    pattern: "Geometric"
+                },
+                averageRating: 4.9,
+                reviewCount: 45
+            },
+            // Footwear
+            {
+                title: "Leather Ankle Boots",
+                summary: "Classic leather ankle boots with block heel",
+                description: "Timeless leather ankle boots featuring a comfortable block heel and durable construction. Perfect for both casual and dressy occasions.",
+                tags: ["footwear", "boots", "leather"],
+                category: categoryIds.footwear,
+                supplier: userIds.alexShoes,
+                price: 129.99,
+                count: 50,
+                images: ["boots-1.jpg", "boots-2.jpg"],
+                features: {
+                    material: "Genuine Leather",
+                    heel: "2.5 inch block heel",
+                    sole: "Rubber",
+                    closure: "Side zipper"
+                },
+                averageRating: 4.7,
+                reviewCount: 85
+            },
+            {
+                title: "Canvas Sneakers",
+                summary: "Classic canvas sneakers with rubber sole",
+                description: "Comfortable and versatile canvas sneakers perfect for everyday wear. Features a durable rubber sole and classic design.",
+                tags: ["footwear", "sneakers", "casual"],
+                category: categoryIds.footwear,
+                supplier: userIds.sophieShoes,
+                price: 59.99,
+                count: 100,
+                images: ["sneakers-1.jpg", "sneakers-2.jpg"],
+                features: {
+                    material: "Canvas upper",
+                    sole: "Rubber",
+                    closure: "Lace-up",
+                    style: "Low-top"
+                },
+                averageRating: 4.5,
+                reviewCount: 120
             }
         ];
 
@@ -186,35 +186,35 @@ const seedProducts = async () => {
         // Update suppliers' products array
         await Promise.all([
             UserModel.updateOne(
-                { _id: userIds.johnAudio },
+                { _id: userIds.johnClothing },
                 { $push: { products: products[0]._id } }
             ),
             UserModel.updateOne(
-                { _id: userIds.sarahSpeaker },
+                { _id: userIds.sarahCasual },
                 { $push: { products: products[1]._id } }
             ),
             UserModel.updateOne(
-                { _id: userIds.mikeWatch },
+                { _id: userIds.mikeFashion },
                 { $push: { products: products[2]._id } }
             ),
             UserModel.updateOne(
-                { _id: userIds.lisaFitness },
+                { _id: userIds.lisaDenim },
                 { $push: { products: products[3]._id } }
             ),
             UserModel.updateOne(
-                { _id: userIds.davidLaptop },
+                { _id: userIds.davidAccessories },
                 { $push: { products: products[4]._id } }
             ),
             UserModel.updateOne(
-                { _id: userIds.emmaDesktop },
+                { _id: userIds.emmaLuxury },
                 { $push: { products: products[5]._id } }
             ),
             UserModel.updateOne(
-                { _id: userIds.alexGaming },
+                { _id: userIds.alexShoes },
                 { $push: { products: products[6]._id } }
             ),
             UserModel.updateOne(
-                { _id: userIds.sophieAccessories },
+                { _id: userIds.sophieShoes },
                 { $push: { products: products[7]._id } }
             )
         ]);

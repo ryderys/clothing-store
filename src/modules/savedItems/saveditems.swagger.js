@@ -44,7 +44,7 @@
  */
 /**
  * @swagger
- * /saved-items/move-to-cart:
+ * /saved-items/add-to-cart:
  *  post:
  *      summary: move saved item to cart
  *      description: move a saved item to cart

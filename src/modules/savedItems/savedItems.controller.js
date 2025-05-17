@@ -22,38 +22,22 @@ class SavedItemsController{
                 throw new httpError.Unauthorized(SavedItemMessages.UserNotAuthorized)
             }
 
-             // Find the user's cart
-            let cart = await CartModel.findOne({userId});
-            if(!cart){
-                cart = new CartModel({userId, items: []})
-                await cart.save()
-            }
-
-             // Find the item in the cart
-            const itemIndex = cart.items.findIndex(item => item.productId.equals(productId))
-            if(itemIndex === -1){
-                throw new httpError.NotFound(SavedItemMessages.ItemNotFound)
-            }
-
-            const item = cart.items[itemIndex] // Get the item from the cart
-            cart.items.splice(itemIndex, 1) // Remove the item from the cart
-
             // Find or create the saved items list for the user
             let savedItems = await savedItemsModel.findOne({userId})
-            if(!savedItems){
+            if (!savedItems){
                 savedItems = new savedItemsModel({userId, items: []})
             }
 
             // Add the item to the saved items list
-            savedItems.items.push({productId: item.productId})
+            const existingSavedItem = savedItems.items.find(item => item.productId.equals(productId))
+            if(existingSavedItem) throw new httpError.BadRequest(SavedItemMessages.ItemAlreadySaved)
+            savedItems.items.push({productId})
 
-            await cart.save() // Save the updated cart
             await savedItems.save() // Save the updated saved items list
             
             return res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,
                 data: {
-                    cart,
                     savedItems
                 }
             })
@@ -149,7 +133,7 @@ class SavedItemsController{
     }
     
 
-    async moveSavedItemToCart(req, res, next){
+    async addSavedItemToCart(req, res, next){
         try {
             const {productId} = req.body;
             const userId = req.user._id;

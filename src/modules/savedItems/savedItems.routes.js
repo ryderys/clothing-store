@@ -9,7 +9,7 @@ const router = require("express").Router()
 router.post('/save',Authorization, checkPermission('savedItems', 'create'), savedItemsController.saveItemForLater)
 
 //move a saved item to cart
-router.post('/move-to-cart', Authorization, checkOwnership(savedItemsModel, 'savedItems', 'updateOwn'), savedItemsController.moveSavedItemToCart)
+router.post('/add-to-cart', Authorization, checkOwnership(savedItemsModel, 'savedItems', 'updateOwn'), savedItemsController.addSavedItemToCart)
 
 //view all saved item
 router.get('/', Authorization,checkOwnership(savedItemsModel, 'savedItems', 'readOwn') , savedItemsController.viewSavedItems)

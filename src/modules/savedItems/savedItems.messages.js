@@ -5,7 +5,8 @@ const SavedItemMessages = {
     ItemRemoved: "محصول مورد نظر از لیست علاقه مندی شما حذف شد",
     ItemsCleared: "لیست علاقه مندی های شما با موفقیت حذف شد",
     ProductNotFound: "محصول مورد نظر یافت نشد",
-    UserNotAuthorized: 'کاربر مورد نظر یافت نشد'
+    UserNotAuthorized: 'کاربر مورد نظر یافت نشد',
+    ItemAlreadySaved: 'محصول مورد نظر قبلا در لیست مورد علاقه ها ذخیره شده است'
 }
 
 module.exports = {
