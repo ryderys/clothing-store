@@ -1,0 +1,7 @@
+.env
+node_modules
+public/upload
+uploads
+eslint.config.mjs
+*.log
+logs
