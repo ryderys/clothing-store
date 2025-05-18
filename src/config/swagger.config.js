@@ -4,8 +4,8 @@ const swaggerDocument = swaggerJsDoc({
     swaggerDefinition: {
         openapi: "3.0.1",
         info: {
-            title: "online-shop",
-            description: "shop project",
+            title: "clothing-store",
+            description: "an online shop for shopping ",
             version: "1.0.0",
         },
     },

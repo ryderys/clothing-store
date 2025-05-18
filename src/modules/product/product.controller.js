@@ -1,15 +1,14 @@
 const autoBind = require("auto-bind");
 const {StatusCodes} = require("http-status-codes")
-const { listOfImagesFromRequest, setFeatures, deleteFileInPublic } = require("../../common/utils/functions");
+const { deleteFileInPublic } = require("../../common/utils/functions");
 const { ProductModel } = require("./product.model");
 const httpError = require("http-errors")
 const { createProductSchema, updateProductSchema } = require("../../common/validations/product.validation");
 const ObjectIdValidator = require("../../common/validations/public.validations");
 const FeaturesModel = require("../features/features.model");
-const { CategoryModel } = require("../category/category.model");
 const { ProductMessages } = require("./product.messages");
 const { logger } = require("../../common/utils/logger");
-const { default: mongoose } = require("mongoose");
+const { uploadToS3 } = require("../../common/utils/multer");
 
 class ProductController {
     constructor(){
@@ -17,18 +16,22 @@ class ProductController {
     }
     async addProduct(req, res, next){
         try {
-            const images = req?.files?.map(image => image?.path?.slice(7));
+            let images = [];
+            if (req?.files?.length > 0) {
+                const uploadPromises = req.files.map(file => uploadToS3(file));
+                const uploadResults = await Promise.all(uploadPromises);
+                images = uploadResults.map(result => result.url);
+            }
 
             const productBody = await createProductSchema.validateAsync(req.body)
             let {title, summary, description, price, tags, count, category, features } = productBody;
             const supplier = req.user._id;
-
             
             const categoryFeatures = await this.getCategoryFeatures(category)
             const categoryFeaturesObject = this.convertFeaturesToObject(categoryFeatures);
             const validatedFeatures = this.validateFeatures(features, categoryFeaturesObject);
 
-            const product = await ProductModel.create([{
+            const product = await ProductModel.create({
                 title,
                 summary,
                 description,
@@ -39,9 +42,7 @@ class ProductController {
                 images,
                 features: validatedFeatures,
                 category
-            }])
-
-        
+            })
 
             return res.status(StatusCodes.CREATED).json({
                 statusCode: StatusCodes.CREATED,
@@ -51,7 +52,6 @@ class ProductController {
             })
 
         } catch (error) {
-            await this.deleteUploadedFiles(req?.files)
             logger.error(error)
             next(error)
         }
@@ -71,16 +71,14 @@ class ProductController {
                 throw new httpError.BadRequest("no updated provided")
             }
 
-            // If new images are uploaded, map their paths and delete old images
+            // If new images are uploaded, upload them to S3
             if (req?.files?.length > 0) {
-                if(product.images && product.images.length > 0){
-                    await this.deleteUploadedFiles(product.images)
-                }
-                const newImages = await this.uploadFiles(req?.files);
-                updates.images = newImages;
+                const uploadPromises = req.files.map(file => uploadToS3(file));
+                const uploadResults = await Promise.all(uploadPromises);
+                updates.images = uploadResults.map(result => result.url);
             } else if (!updates.images) {
                 updates.images = product.images || []
-            }  else if(typeof updates.images === "string"){
+            } else if(typeof updates.images === "string"){
                 updates.images = [updates.images]
             }
         
@@ -101,14 +99,9 @@ class ProductController {
                 }
             })
         } catch (error) {
-            if(req?.files?.length > 0){
-                await this.deleteUploadedFiles(req?.files)
-            }
             logger.error(error)
             next(error)
         }
-
-
     }
 
     async getAllProducts(req, res, next){
