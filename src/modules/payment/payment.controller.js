@@ -70,9 +70,6 @@ class PaymentController {
                 payment.authority = result.authority;
                 await payment.save();
 
-                // Log an API request
-                logger.logAPIRequest(req, 'User logged in');
-
                 return res.status(StatusCodes.OK).json({
                     statusCode: StatusCodes.OK,
                     data: {
@@ -84,8 +81,6 @@ class PaymentController {
                 // Clean up if payment initiation fails
                 await PaymentModel.findByIdAndDelete(payment._id);
                 await OrderModel.findByIdAndDelete(order._id);
-                // Log an error
-                logger.logAPIError(req, error);
                 throw error;
             }
 
@@ -130,16 +125,11 @@ class PaymentController {
                 // Clear cart
                 await cartController.clearCart(req, res, next);
 
-                // Log a database operation
-                logger.logDatabaseOperation('update', { collection: 'payments', id: payment._id });
-
                 return res.redirect(`${process.env.FRONTEND_URL}/payment?status=success`);
             } catch (error) {
                 // Clean up on verification failure
                 await PaymentModel.findByIdAndDelete(payment._id);
                 await OrderModel.findByIdAndDelete(payment.orderId);
-                // Log an error
-                logger.logAPIError(req, error);
                 return res.redirect(`${process.env.FRONTEND_URL}/payment?status=failure`);
             }
 
