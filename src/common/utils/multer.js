@@ -25,7 +25,7 @@ const uploadFile = multer({
 });
 
 // Helper function to upload file to S3
-const uploadToS3 = async (file, folder = 'products') => {
+const uploadToS3 = async (file, folder = 'clothing-store-image/products') => {
     const format = path.extname(file.originalname);
     if (!format) {
         throw new HttpError.BadRequest("Invalid file format");

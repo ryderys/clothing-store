@@ -8,7 +8,7 @@ const ObjectIdValidator = require("../../common/validations/public.validations")
 const FeaturesModel = require("../features/features.model");
 const { ProductMessages } = require("./product.messages");
 const { logger } = require("../../common/utils/logger");
-const { uploadToS3 } = require("../../common/utils/multer");
+const { uploadToS3, deleteFromS3 } = require("../../common/utils/multer");
 
 class ProductController {
     constructor(){
@@ -188,14 +188,32 @@ class ProductController {
         try {
             const {id} = req.params;
             const product = await this.findProductById(id)
+            
+            // Delete all product images from S3
+            if (product.images && product.images.length > 0) {
+                const deletePromises = product.images.map(imageUrl => {
+                    // Extract the key from the full URL
+                    const key = imageUrl.split('/').slice(-2).join('/'); // Gets 'products/filename.ext'
+                    return deleteFromS3(key);
+                });
+                
+                try {
+                    await Promise.all(deletePromises);
+                } catch (error) {
+                    logger.error("Error deleting S3 files:", error);
+                    // Continue with product deletion even if S3 deletion fails
+                }
+            }
+
             const {deletedCount} = await ProductModel.deleteOne({_id: product._id})
             if(deletedCount == 0) throw new httpError.InternalServerError()
+            
             return res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,
                 data: {
                     message: ProductMessages.ProductDeleted
                 }
-        })
+            })
 
         } catch (error) {
             logger.error(error)
