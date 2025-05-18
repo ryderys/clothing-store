@@ -1,80 +1,59 @@
 const { ProductModel } = require('../modules/product/product.model');
 const { seedCategories } = require('./category.seeder');
 const { seedUsers } = require('./user.seeder');
-const connectDB = require('../config/database.config');
-const mongoose = require('mongoose');
+const { UserModel } = require('../modules/user/user.model');
 require('dotenv').config();
 
-const seedProducts = async () => {
+const seedProducts = async (userIds, categoryIds) => {
     try {
-        // Connect to MongoDB using the new configuration
-        await connectDB();
-        console.log('Connected to MongoDB');
-
-        // First seed categories and users to get their IDs
-        const categoryIds = await seedCategories();
-        const userIds = await seedUsers();
-        console.log('Categories and users seeded successfully');
+        // Clear existing products
+        await ProductModel.deleteMany({});
+        console.log('Cleared existing products');
 
         const sampleProducts = [
             // Men's Clothing
             {
-                title: "Classic Fit Dress Shirt",
-                summary: "Premium cotton dress shirt with a comfortable classic fit",
-                description: "A timeless dress shirt made from high-quality cotton. Features a button-down collar, single chest pocket, and a comfortable classic fit that's perfect for both formal and casual occasions.",
-                tags: ["men", "formal", "shirts"],
+                title: "Classic White T-Shirt",
+                summary: "Essential cotton t-shirt for everyday wear",
+                description: "Premium quality cotton t-shirt with a comfortable fit. Perfect for casual wear and everyday use.",
+                tags: ["t-shirt", "casual", "cotton"],
                 category: categoryIds.mensShirts,
                 supplier: userIds.johnClothing,
-                price: 49.99,
+                price: 150000, // 150,000 Toman
                 count: 100,
-                images: ["dress-shirt-1.jpg", "dress-shirt-2.jpg"],
-                features: {
-                    material: "100% Premium Cotton",
-                    fit: "Classic Fit",
-                    collar: "Button-down",
-                    care: "Machine washable"
-                },
+                images: ["https://example.com/white-tshirt-1.jpg", "https://example.com/white-tshirt-2.jpg"],
+                features: ["100% Cotton", "Regular Fit", "Machine Washable"],
                 averageRating: 4.5,
-                reviewCount: 120
+                reviewCount: 25
             },
             {
-                title: "Slim Fit Chino Pants",
-                summary: "Modern slim fit chinos in versatile colors",
-                description: "Contemporary slim fit chinos made from stretch cotton for comfort and mobility. Perfect for both casual and semi-formal occasions.",
-                tags: ["men", "pants", "casual"],
+                title: "Slim Fit Jeans",
+                summary: "Modern slim fit jeans with stretch comfort",
+                description: "Stylish slim fit jeans made with premium denim and added stretch for comfort. Perfect for a modern look.",
+                tags: ["jeans", "slim-fit", "denim"],
                 category: categoryIds.mensPants,
-                supplier: userIds.sarahCasual,
-                price: 59.99,
-                count: 75,
-                images: ["chinos-1.jpg", "chinos-2.jpg"],
-                features: {
-                    material: "98% Cotton, 2% Elastane",
-                    fit: "Slim Fit",
-                    closure: "Button and zip",
-                    pockets: "4 pockets"
-                },
+                supplier: userIds.johnClothing,
+                price: 450000, // 450,000 Toman
+                count: 50,
+                images: ["https://example.com/jeans-1.jpg", "https://example.com/jeans-2.jpg"],
+                features: ["98% Cotton, 2% Elastane", "Slim Fit", "Button and Zip Closure"],
                 averageRating: 4.3,
-                reviewCount: 85
+                reviewCount: 18
             },
             // Women's Clothing
             {
                 title: "Floral Summer Dress",
-                summary: "Light and breezy floral print dress for summer",
-                description: "A beautiful floral print dress perfect for summer days. Features a flattering A-line silhouette and comfortable elastic waistband.",
-                tags: ["women", "dresses", "summer"],
+                summary: "Light and breezy floral dress for summer",
+                description: "Beautiful floral print dress perfect for summer days. Made with lightweight fabric for maximum comfort.",
+                tags: ["dress", "summer", "floral"],
                 category: categoryIds.womensDresses,
                 supplier: userIds.mikeFashion,
-                price: 69.99,
-                count: 50,
-                images: ["floral-dress-1.jpg", "floral-dress-2.jpg"],
-                features: {
-                    material: "Polyester Blend",
-                    fit: "A-line",
-                    length: "Knee-length",
-                    care: "Machine wash cold"
-                },
+                price: 350000, // 350,000 Toman
+                count: 75,
+                images: ["https://example.com/dress-1.jpg", "https://example.com/dress-2.jpg"],
+                features: ["Lightweight Fabric", "Floral Print", "A-line Silhouette"],
                 averageRating: 4.7,
-                reviewCount: 95
+                reviewCount: 32
             },
             {
                 title: "High-Waisted Jeans",
@@ -98,22 +77,17 @@ const seedProducts = async () => {
             // Accessories
             {
                 title: "Leather Crossbody Bag",
-                summary: "Elegant leather crossbody bag with adjustable strap",
-                description: "A versatile leather crossbody bag that combines style and functionality. Features multiple compartments and an adjustable strap.",
-                tags: ["accessories", "bags", "leather"],
+                summary: "Stylish and practical leather bag",
+                description: "High-quality leather crossbody bag with multiple compartments. Perfect for everyday use.",
+                tags: ["bag", "leather", "accessories"],
                 category: categoryIds.accessories,
                 supplier: userIds.davidAccessories,
-                price: 89.99,
-                count: 40,
-                images: ["crossbody-1.jpg", "crossbody-2.jpg"],
-                features: {
-                    material: "Genuine Leather",
-                    dimensions: "10\" x 7\" x 2\"",
-                    closure: "Magnetic snap",
-                    strap: "Adjustable"
-                },
+                price: 850000, // 850,000 Toman
+                count: 30,
+                images: ["https://example.com/bag-1.jpg", "https://example.com/bag-2.jpg"],
+                features: ["Genuine Leather", "Adjustable Strap", "Multiple Compartments"],
                 averageRating: 4.8,
-                reviewCount: 65
+                reviewCount: 15
             },
             {
                 title: "Silk Scarf",
@@ -136,23 +110,18 @@ const seedProducts = async () => {
             },
             // Footwear
             {
-                title: "Leather Ankle Boots",
-                summary: "Classic leather ankle boots with block heel",
-                description: "Timeless leather ankle boots featuring a comfortable block heel and durable construction. Perfect for both casual and dressy occasions.",
-                tags: ["footwear", "boots", "leather"],
+                title: "Running Shoes",
+                summary: "Lightweight running shoes with cushioning",
+                description: "Professional running shoes with advanced cushioning technology. Perfect for runners of all levels.",
+                tags: ["shoes", "running", "sports"],
                 category: categoryIds.footwear,
                 supplier: userIds.alexShoes,
-                price: 129.99,
-                count: 50,
-                images: ["boots-1.jpg", "boots-2.jpg"],
-                features: {
-                    material: "Genuine Leather",
-                    heel: "2.5 inch block heel",
-                    sole: "Rubber",
-                    closure: "Side zipper"
-                },
-                averageRating: 4.7,
-                reviewCount: 85
+                price: 1200000, // 1,200,000 Toman
+                count: 40,
+                images: ["https://example.com/shoes-1.jpg", "https://example.com/shoes-2.jpg"],
+                features: ["Breathable Mesh", "Cushioned Midsole", "Rubber Outsole"],
+                averageRating: 4.6,
+                reviewCount: 28
             },
             {
                 title: "Canvas Sneakers",
@@ -174,10 +143,6 @@ const seedProducts = async () => {
                 reviewCount: 120
             }
         ];
-
-        // Clear existing products
-        await ProductModel.deleteMany({});
-        console.log('Cleared existing products');
 
         // Insert new products
         const products = await ProductModel.insertMany(sampleProducts);
@@ -219,14 +184,11 @@ const seedProducts = async () => {
             )
         ]);
 
-        // Disconnect from MongoDB
-        await mongoose.disconnect();
-        console.log('Disconnected from MongoDB');
     } catch (error) {
         console.error('Error seeding products:', error);
-        process.exit(1);
+        throw error; // Propagate the error instead of exiting
     }
 };
 
-// Run the seeder
-seedProducts(); 
+// Export the seeder function
+module.exports = { seedProducts }; 

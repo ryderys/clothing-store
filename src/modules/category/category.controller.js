@@ -51,6 +51,7 @@ class CategoryController{
     async getAllCategory(req, res, next){
         try {
             const categories = await CategoryModel.find({parent: {$exists: false}})
+            // const categories = await CategoryModel.find()
 
             return res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,

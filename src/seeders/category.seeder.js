@@ -1,6 +1,4 @@
 const { CategoryModel } = require('../modules/category/category.model');
-const connectDB = require('../config/database.config');
-const mongoose = require('mongoose');
 require('dotenv').config();
 
 const sampleCategories = [
@@ -111,10 +109,6 @@ const sampleCategories = [
 
 const seedCategories = async () => {
     try {
-        // Connect to MongoDB using the new configuration
-        await connectDB();
-        console.log('Connected to MongoDB');
-
         // Drop the collection to ensure clean state
         await CategoryModel.collection.drop().catch(err => {
             if (err.code !== 26) { // 26 is the error code for "namespace not found"
@@ -184,7 +178,7 @@ const seedCategories = async () => {
 
     } catch (error) {
         console.error('Error seeding categories:', error);
-        process.exit(1);
+        throw error; // Propagate the error instead of exiting
     }
 };
 

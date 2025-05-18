@@ -10,10 +10,13 @@ async function zarinaplRequest(amount, user, description = "خرید محصول"
             throw createHttpError.BadRequest("Invalid amount");
         }
 
+        // Convert amount to Rials and ensure it's an integer
+        const amountInRials = Math.round(amount * 10);
+
         const result = await axios.post(process.env.ZARINPAL_REQUEST_URL, {
             merchant_id: process.env.ZARINPAL_MERCHANT_ID,
             callback_url: process.env.ZARINPAL_CALLBACK_URL,
-            amount: amount * 10,
+            amount: amountInRials,
             description,
             metadata: {
                 email: user?.email,
@@ -48,10 +51,13 @@ async function zarinpalVerify(amount, authority) {
             throw createHttpError.BadRequest("Invalid amount or authority");
         }
 
+        // Convert amount to Rials and ensure it's an integer
+        const amountInRials = Math.round(amount * 10);
+
         const result = await axios.post(process.env.ZARINPAL_VERIFY_URL, {
             merchant_id: process.env.ZARINPAL_MERCHANT_ID,
             authority,
-            amount: amount * 10,
+            amount: amountInRials,
         }, {
             headers: {
                 'Content-Type': 'application/json'
