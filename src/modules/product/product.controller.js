@@ -129,31 +129,31 @@ class ProductController {
                 {
                     $project: {
                         _id: 0,
-                    id: "$_id",
-                    title: 1,
-                    summary: 1,
-                    description: 1,
-                    price: 1,
-                    count: 1,
-                    images: 1,
-                    tags: 1,
-                    features: 1,
-                    reviewCount: 1,
-                    averageRating: 1,
-                    supplier: 1,
-                    category: {
-                        id: "$category._id",
-                        title: "$category.title",
-                        slug: "$category.slug",
-                        icon: "$category.icon",
-                        parent: "$category.parent",
-                        children: "$category.children"
-                    },
-                    createdAt: 1,
-                    updatedAt: 1
-                }
-            },
-
+                        id: "$_id",
+                        title: 1,
+                        summary: 1,
+                        description: 1,
+                        price: 1,
+                        count: 1,
+                        images: 1,
+                        tags: 1,
+                        features: 1,
+                        reviewCount: 1,
+                        averageRating: 1,
+                        supplier: 1,
+                        category: {
+                            id: "$category._id",
+                            title: "$category.title",
+                            slug: "$category.slug",
+                            icon: "$category.icon",
+                            parent: "$category.parent",
+                            children: "$category.children"
+                        },
+                        createdAt: 1,
+                        updatedAt: 1
+                    }
+                },
+                { $sort: { createdAt: -1 } }
             ]);
 
             return res.status(StatusCodes.OK).json({

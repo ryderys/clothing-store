@@ -31,7 +31,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
 app.use(express.static(path.join(__dirname, "public")))
 
 swaggerSetup(app)
-app.use(adminRateLimiter)
+// app.use(adminRateLimiter)
 // app.use(session({
 //     secret: process.env.SESSION_SECRET,
 //     resave: false,

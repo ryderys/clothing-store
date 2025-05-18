@@ -5,9 +5,9 @@ const categoryController = require("./category.controller")
 
 const router = require("express").Router()
 
-router.post("/",  adminAuthMiddleware, checkPermission('category', 'create'), adminRateLimiter, categoryController.createCategory)
-router.get("/",  adminRateLimiter,categoryController.getAllCategory) //adminAuthMiddleware, checkPermission('category', 'read')
-router.delete("/:id", adminAuthMiddleware, checkPermission('category', 'delete'),adminRateLimiter ,categoryController.deleteCategoryById)
+router.post("/",  adminAuthMiddleware, checkPermission('category', 'create'), categoryController.createCategory)
+router.get("/", categoryController.getAllCategory) //adminAuthMiddleware, checkPermission('category', 'read')
+router.delete("/:id", adminAuthMiddleware, checkPermission('category', 'delete') ,categoryController.deleteCategoryById)
 
 module.exports = {
     AdminApiCategoryRouter: router
