@@ -3,10 +3,9 @@ const { StatusCodes } = require("http-status-codes");
 const httpError = require("http-errors");
 const { UserModel } = require("./user.model");
 const CartModel = require("../cart/cart.model");
-const OrderModel = require("../orders/orders.model");
 const PendingOrderModel = require("../orders/pending-order.model");
 const { logger } = require("../../common/utils/logger");
-const { userValidationSchema, updateUserValidationSchema } = require("../../common/validations/user.validation");
+const { updateUserValidationSchema } = require("../../common/validations/user.validation");
 const { UserMessages } = require("./user.messages");
 
 class UserController{
@@ -37,7 +36,7 @@ class UserController{
             const userId = req.user._id;
             await updateUserValidationSchema.validateAsync(req.body)
             const data = {...req.body};
-            const allowedFields = ["fullname", "username", "email"]
+            const allowedFields = ["fullName", "username", "email"]
             const dataToUpdate = Object.keys(data)
             .filter(field => allowedFields.includes(field))
             .reduce((obj, field) => {
@@ -68,6 +67,7 @@ class UserController{
             next(error)
         }
     }
+
     async getAllUsers(req, res, next){
         try {
             const {search} = req.query

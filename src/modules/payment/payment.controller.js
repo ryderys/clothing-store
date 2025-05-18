@@ -7,7 +7,10 @@ const { logger } = require("../../common/utils/logger");
 const OrderModel = require("../orders/orders.model");
 const { UserModel } = require("../user/user.model");
 const { zarinaplRequest, zarinpalVerify } = require("../zarinpal/zarinpal.controller");
+const CartModel = require("../cart/cart.model");
+const { config } = require("dotenv");
 
+config()
 class PaymentController {
     constructor() {
         autoBind(this);
@@ -19,12 +22,12 @@ class PaymentController {
             
             // Validate user profile
             const user = await UserModel.findById(userId);
-            if (!user.fullName || !user.email) {
+            if (!user.username || !user.email) {
                 throw new httpError.BadRequest("Please complete your profile before making a payment");
             }
 
-            // Get user's cart
-            const cart = await cartController.getOrCreateCart(userId);
+            // Get user's cart with populated product data
+            const cart = await CartModel.findOne({ userId }).populate('items.productId');
             
             if (!cart || !cart.items || cart.items.length === 0) {
                 throw new httpError.BadRequest("Cart is empty");
@@ -32,6 +35,9 @@ class PaymentController {
 
             // Calculate total amount
             const totalAmount = cart.items.reduce((total, item) => {
+                if (!item.productId || !item.productId.price) {
+                    throw new httpError.BadRequest("Invalid product data in cart");
+                }
                 return total + (item.productId.price * item.quantity);
             }, 0);
 
@@ -86,9 +92,9 @@ class PaymentController {
 
     async paymentVerifyHandler(req, res, next) {
         try {
-            const { Authority, status } = req.query;
+            const { Authority, Status } = req?.query;
             
-            if (status !== "OK" || !Authority) {
+            if (Status !== "OK" || !Authority) {
                 return res.redirect(`${process.env.FRONTEND_URL}/payment?status=failure&error=invalid_status`);
             }
 
@@ -105,15 +111,15 @@ class PaymentController {
 
                 // Update payment
                 payment.status = true;
-                payment.refId = result.ref_id;
-                await payment.save();
-
+                payment.refId = result.ref_id || "12345";
+                
                 // Update order
                 const order = await OrderModel.findById(payment.orderId);
                 if (!order) {
                     throw httpError.NotFound("Order not found");
                 }
                 order.status = "Processing";
+                await payment.save();
                 await order.save();
 
                 // Clear cart
@@ -124,7 +130,7 @@ class PaymentController {
                 // Clean up on verification failure
                 await PaymentModel.findByIdAndDelete(payment._id);
                 await OrderModel.findByIdAndDelete(payment.orderId);
-                return res.redirect(`${process.env.FRONTEND_URL}/payment?status=failure&error=${error.message}`);
+                return res.redirect(`${process.env.FRONTEND_URL}/payment?status=failure`);
             }
 
         } catch (error) {
