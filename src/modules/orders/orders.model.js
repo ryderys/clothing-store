@@ -10,7 +10,8 @@ const OrderSchema = new mongoose.Schema({
         }
     ],
     totalAmount: {type: Number, required: true},
-    status: {type: String, enum: ['Pending', 'Processing', "Shipped", "out for delivery","Delivered", "cancelled"], default: 'Pending'},
+    address: {type: String},
+    status: {type: String, enum: ['Ordered','Pending', 'Processing', "Shipped", "out for delivery","Delivered", "cancelled"], default: 'Pending'},
 }, {timestamps: true})
 
 const OrderModel = mongoose.model('Order', OrderSchema)
