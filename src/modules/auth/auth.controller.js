@@ -223,14 +223,16 @@ class UserAuthController {
       .cookie(CookieNames.AccessToken, accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: 1000 * 60 * 60,
-      })
+        domain: process.env.NODE_ENV === "production" ? ".liara.run" : undefined
+      })  
       .cookie(CookieNames.RefreshToken, refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: 1000 * 60 * 60 * 24 * 7, //7 days
+        domain: process.env.NODE_ENV === "production" ? ".liara.run" : undefined
       });
   }
 }
