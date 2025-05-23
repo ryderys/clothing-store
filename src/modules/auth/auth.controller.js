@@ -173,9 +173,9 @@ class UserAuthController {
       const userId = req.user._id;
       if (!userId) throw new httpError.BadRequest(AuthMessages.LogIn);
       await UserModel.findByIdAndUpdate(userId, { refreshToken: null });
+      this.setToken(res, " ", " ");
+
       return res
-        .clearCookie(CookieNames.AccessToken)
-        .clearCookie(CookieNames.RefreshToken)
         .status(StatusCodes.OK)
         .json({
           statusCode: StatusCodes.OK,
