@@ -225,7 +225,7 @@ class UserAuthController {
         secure: process.env.NODE_ENV === "production",
         sameSite: "none",
         maxAge: 1000 * 60 * 60,
-        domain: process.env.NODE_ENV === "production" ? ".liara.run" : undefined
+        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
       })  
       .cookie(CookieNames.RefreshToken, refreshToken, {
         httpOnly: true,
