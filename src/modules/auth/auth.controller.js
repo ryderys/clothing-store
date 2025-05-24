@@ -4,14 +4,12 @@ const httpError = require("http-errors");
 const jwt = require("jsonwebtoken");
 const { StatusCodes } = require("http-status-codes");
 const CookieNames = require("../../common/constants/cookie.enum");
-const NodeEnv = require("../../common/constants/env.enum");
 const autoBind = require("auto-bind");
 const {
   getOtpSchema,
   checkOtpSchema,
 } = require("../../common/validations/auth.validation");
-const CartModel = require("../cart/cart.model");
-const { savedItemsModel } = require("../savedItems/savedItem.model");
+
 const bcrypt = require("bcrypt");
 const { logger } = require("../../common/utils/logger");
 const { AuthMessages } = require("./auth.messages");
@@ -98,6 +96,7 @@ class UserAuthController {
         mobile,
         id: user._id,
       });
+      console.log(``);
 
       const hashedRefreshToken = await this.hashToken(refreshToken);
       user.accessToken = accessToken;
@@ -173,7 +172,9 @@ class UserAuthController {
       const userId = req.user._id;
       if (!userId) throw new httpError.BadRequest(AuthMessages.LogIn);
       await UserModel.findByIdAndUpdate(userId, { refreshToken: null });
-      this.setToken(res, " ", " ");
+      
+      res.clearCookie(CookieNames.AccessToken)
+      .clearCookie(CookieNames.RefreshToken);
 
       return res
         .status(StatusCodes.OK)
@@ -223,16 +224,16 @@ class UserAuthController {
       .cookie(CookieNames.AccessToken, accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "lax",
         maxAge: 1000 * 60 * 60,
-        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+        // domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
       })  
       .cookie(CookieNames.RefreshToken, refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "lax",
         maxAge: 1000 * 60 * 60 * 24 * 7, //7 days
-        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+        // domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
       });
   }
 }

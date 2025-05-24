@@ -6,8 +6,8 @@ require("dotenv").config()
 const Authorization = async(req, res, next) => {
     try {
         // Retrieve the token from cookies
-        const token = req?.cookies?.access_token|| req?.headers?.authorization?.split(' ')[1]
-
+        const token = req?.cookies?.access_token
+        
         // If token is not found, throw an unauthorized error
         if(!token) throw new httpError.Unauthorized(AuthMessages.LogIn)
         
