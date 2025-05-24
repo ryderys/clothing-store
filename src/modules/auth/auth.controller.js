@@ -224,16 +224,16 @@ class UserAuthController {
       .cookie(CookieNames.AccessToken, accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
         maxAge: 1000 * 60 * 60,
-        // domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
       })  
       .cookie(CookieNames.RefreshToken, refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
         maxAge: 1000 * 60 * 60 * 24 * 7, //7 days
-        // domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
       });
   }
 }
