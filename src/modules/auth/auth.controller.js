@@ -173,8 +173,12 @@ class UserAuthController {
       if (!userId) throw new httpError.BadRequest(AuthMessages.LogIn);
       await UserModel.findByIdAndUpdate(userId, { refreshToken: null });
       
-      res.clearCookie(CookieNames.AccessToken)
-      .clearCookie(CookieNames.RefreshToken);
+      res.clearCookie(CookieNames.AccessToken, {
+        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+      })
+      .clearCookie(CookieNames.RefreshToken, {
+        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+      });
 
       return res
         .status(StatusCodes.OK)
