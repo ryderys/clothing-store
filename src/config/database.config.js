@@ -9,7 +9,7 @@ const connectDB = async () => {
             socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
         };
 
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://youssefiashkanys:Ashkanys79@first-project.co830.mongodb.net/?retryWrites=true&w=majority&appName=first-project', options);
+        await mongoose.connect(process.env.MONGODB_URL || 'mongodb+srv://youssefiashkanys:Ashkanys79@first-project.co830.mongodb.net/?retryWrites=true&w=majority&appName=first-project', options);
         console.log("Connected to MongoDB successfully");
 
         // Handle connection events
