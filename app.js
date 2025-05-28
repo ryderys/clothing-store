@@ -23,7 +23,7 @@ connectDB().catch(err => {
 app.use(helmet())
 app.use(cors({
     origin: process.env.NODE_ENV === "production" 
-    ? ["https://clothing-store.liara.run", "http://localhost:5173"]
+    ? ["https://clothing-store.liara.run", "https://fit-style-1.onrender.com","https://fit-style.pages.dev.com", "http://localhost:5173"]
     : "http://localhost:5173",
     credentials: true
 }))
