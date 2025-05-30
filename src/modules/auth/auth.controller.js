@@ -174,9 +174,15 @@ class UserAuthController {
       await UserModel.findByIdAndUpdate(userId, { refreshToken: null });
       
       res.clearCookie(CookieNames.AccessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
         domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
       })
       .clearCookie(CookieNames.RefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
         domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
       });
 
