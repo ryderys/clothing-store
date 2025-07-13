@@ -17,7 +17,7 @@ class UserController{
             const userId = req.user._id;
 
             const user = await UserModel.findById(userId)
-            .select("-verifiedMobile -otp -products -role -__v -refreshToken")
+            .select("-verifiedMobile -otp -products -__v -refreshToken")
             .lean()
             return res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,
