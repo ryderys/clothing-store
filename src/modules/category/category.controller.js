@@ -8,6 +8,7 @@ const { createCategorySchema } = require("../../common/validations/category.vali
 const FeaturesModel = require("../features/features.model");
 const { CategoryMessages } = require("./category.messages");
 const { logger } = require("../../common/utils/logger");
+const { uploadToS3 } = require("../../common/utils/multer");
 
 class CategoryController{
     constructor(){
@@ -16,6 +17,12 @@ class CategoryController{
 
     async createCategory(req, res, next){
         try {
+            let photo = null;
+            if (req?.file) {
+                const uploadResult = await uploadToS3(req.file, 'clothing-store-image/categories');
+                photo = uploadResult.url;
+            }
+
             const validatedCategory = await createCategorySchema.validateAsync(req.body)
             let {title, icon, slug, parent} = validatedCategory;
             let parents = []
@@ -34,7 +41,7 @@ class CategoryController{
             slug = slugify(validatedCategory?.slug || title)
             await this.checkCategorySlugUniqueness(slug)
 
-            const category = await CategoryModel.create({title, icon, slug, parent, parents})
+            const category = await CategoryModel.create({title, icon, photo, slug, parent, parents})
             return res.status(StatusCodes.CREATED).json({
                 statusCode: StatusCodes.CREATED,
                 data: {

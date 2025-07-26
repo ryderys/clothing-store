@@ -7,6 +7,7 @@ const sampleCategories = [
         title: "Clothing",
         slug: "clothing",
         icon: "clothing-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -14,6 +15,7 @@ const sampleCategories = [
         title: "Men",
         slug: "men",
         icon: "men-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -21,6 +23,7 @@ const sampleCategories = [
         title: "Women",
         slug: "women",
         icon: "women-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -28,6 +31,7 @@ const sampleCategories = [
         title: "Accessories",
         slug: "accessories",
         icon: "accessories-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -35,6 +39,7 @@ const sampleCategories = [
         title: "Footwear",
         slug: "footwear",
         icon: "footwear-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -42,6 +47,7 @@ const sampleCategories = [
         title: "Sale",
         slug: "sale",
         icon: "sale-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -50,6 +56,7 @@ const sampleCategories = [
         title: "Men's Shirts",
         slug: "mens-shirts",
         icon: "mens-shirts-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -57,6 +64,7 @@ const sampleCategories = [
         title: "Men's Pants",
         slug: "mens-pants",
         icon: "mens-pants-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -65,6 +73,7 @@ const sampleCategories = [
         title: "Women's Dresses",
         slug: "womens-dresses",
         icon: "womens-dresses-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -72,6 +81,7 @@ const sampleCategories = [
         title: "Women's Jeans",
         slug: "womens-jeans",
         icon: "womens-jeans-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -80,6 +90,7 @@ const sampleCategories = [
         title: "Bags",
         slug: "bags",
         icon: "bags-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -87,6 +98,7 @@ const sampleCategories = [
         title: "Scarves",
         slug: "scarves",
         icon: "scarves-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -95,6 +107,7 @@ const sampleCategories = [
         title: "Boots",
         slug: "boots",
         icon: "boots-icon.png",
+        photo: null,
         parent: null,
         parents: []
     },
@@ -102,6 +115,7 @@ const sampleCategories = [
         title: "Sneakers",
         slug: "sneakers",
         icon: "sneakers-icon.png",
+        photo: null,
         parent: null,
         parents: []
     }

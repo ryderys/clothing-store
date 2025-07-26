@@ -5,6 +5,7 @@ const CategorySchema = new Schema({
   title: { type: String ,required: true ,unique: true },
   slug: {type: String, required: true, index: true},
   icon: {type: String},
+  photo: {type: String}, // URL of the uploaded photo
   parent: {type: Types.ObjectId, ref: 'Category', required: false},
   parents: {type: [Types.ObjectId], required: false, default: []},
 }, {

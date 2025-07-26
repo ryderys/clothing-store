@@ -13,67 +13,212 @@
  *              type: object
  *              required: 
  *                  -   title
- *                  -   icon
  *              properties:
  *                  title:
  *                      type: string
- *                      example: ""
+ *                      description: The title of the category
+ *                      example: "Men's Clothing"
  *                  slug:
  *                      type: string
- *                      example: ""
+ *                      description: The slug for the category (optional, will be auto-generated from title)
+ *                      example: "mens-clothing"
  *                  icon:
  *                      type: string
- *                      example: ""
+ *                      description: The icon identifier for the category
+ *                      example: "mens-icon"
+ *                  photo:
+ *                      type: string
+ *                      format: binary
+ *                      description: The photo file for the category (optional)
  *                  parent:
  *                      type: string
- *                      example: ""
- *                  
+ *                      description: The parent category ID (optional)
+ *                      example: "507f1f77bcf86cd799439011"
  */
 
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          CategoryResponse:
+ *              type: object
+ *              properties:
+ *                  statusCode:
+ *                      type: integer
+ *                      example: 201
+ *                  data:
+ *                      type: object
+ *                      properties:
+ *                          message:
+ *                              type: string
+ *                              example: "دسته بندی با موفقیت ایجاد شد"
+ *                          category:
+ *                              type: object
+ *                              properties:
+ *                                  _id:
+ *                                      type: string
+ *                                      example: "507f1f77bcf86cd799439011"
+ *                                  title:
+ *                                      type: string
+ *                                      example: "Men's Clothing"
+ *                                  slug:
+ *                                      type: string
+ *                                      example: "mens-clothing"
+ *                                  icon:
+ *                                      type: string
+ *                                      example: "mens-icon"
+ *                                  photo:
+ *                                      type: string
+ *                                      example: "https://example.com/categories/mens-clothing.jpg"
+ *                                  parent:
+ *                                      type: string
+ *                                      example: "507f1f77bcf86cd799439012"
+ *                                  children:
+ *                                      type: array
+ *                                      items:
+ *                                          type: object
+ */
 
 /**
  * @swagger
  * /category:
  *  post:
- *      summary: create new category
+ *      summary: Create a new category
  *      tags:
  *          -   Category
+ *      security:
+ *          -   bearerAuth: []
  *      requestBody:
+ *          required: true
  *          content:
- *              application/x-www-form-urlencoded:
+ *              multipart/form-data:
  *                  schema:
- *                      $ref: '#/components/schemas/CreateCategory'
- *              application/json:
- *                  schema:
- *                      $ref: '#/components/schemas/CreateCategory'
+ *                      type: object
+ *                      required:
+ *                          -   title
+ *                      properties:
+ *                          title:
+ *                              type: string
+ *                              description: The title of the category
+ *                              example: "Men's Clothing"
+ *                          slug:
+ *                              type: string
+ *                              description: The slug for the category (optional)
+ *                              example: "mens-clothing"
+ *                          icon:
+ *                              type: string
+ *                              description: The icon identifier for the category
+ *                              example: "mens-icon"
+ *                          photo:
+ *                              type: string
+ *                              format: binary
+ *                              description: The photo file for the category (optional)
+ *                          parent:
+ *                              type: string
+ *                              description: The parent category ID (optional)
+ *                              example: "507f1f77bcf86cd799439011"
  *      responses:
  *          201:
- *              description: created
+ *              description: Category created successfully
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/CategoryResponse'
+ *          400:
+ *              description: Bad request - validation error
+ *          401:
+ *              description: Unauthorized - authentication required
+ *          403:
+ *              description: Forbidden - insufficient permissions
  */
+
 /**
  * @swagger
  * /category:
  *  get:
- *      summary: get all category
+ *      summary: Get all categories
  *      tags:
  *          -   Category
  *      responses:
  *          200:
- *              description: success
+ *              description: Categories retrieved successfully
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              statusCode:
+ *                                  type: integer
+ *                                  example: 200
+ *                              data:
+ *                                  type: object
+ *                                  properties:
+ *                                      categories:
+ *                                          type: array
+ *                                          items:
+ *                                              type: object
+ *                                              properties:
+ *                                                  _id:
+ *                                                      type: string
+ *                                                      example: "507f1f77bcf86cd799439011"
+ *                                                  title:
+ *                                                      type: string
+ *                                                      example: "Men's Clothing"
+ *                                                  slug:
+ *                                                      type: string
+ *                                                      example: "mens-clothing"
+ *                                                  icon:
+ *                                                      type: string
+ *                                                      example: "mens-icon"
+ *                                                  photo:
+ *                                                      type: string
+ *                                                      example: "https://example.com/categories/mens-clothing.jpg"
+ *                                                  children:
+ *                                                      type: array
+ *                                                      items:
+ *                                                          type: object
  */
 
 /**
  * @swagger
  * /category/{id}:
  *  delete:
- *      summary: delete category
+ *      summary: Delete a category
  *      tags:
  *          -   Category
+ *      security:
+ *          -   bearerAuth: []
  *      parameters:
  *          -   in: path
  *              name: id
- *              example: ""
+ *              required: true
+ *              schema:
+ *                  type: string
+ *              description: The category ID
+ *              example: "507f1f77bcf86cd799439011"
  *      responses:
  *          200:
- *              description: success
+ *              description: Category deleted successfully
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              statusCode:
+ *                                  type: integer
+ *                                  example: 200
+ *                              data:
+ *                                  type: object
+ *                                  properties:
+ *                                      message:
+ *                                          type: string
+ *                                          example: "دسته بندی با موفقیت حذف شد"
+ *          400:
+ *              description: Bad request - invalid category ID
+ *          401:
+ *              description: Unauthorized - authentication required
+ *          403:
+ *              description: Forbidden - insufficient permissions
+ *          404:
+ *              description: Category not found
  */

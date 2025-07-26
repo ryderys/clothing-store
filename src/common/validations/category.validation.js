@@ -6,6 +6,7 @@ const createCategorySchema = joi.object({
     title: joi.string().min(3).max(30).error(httpError.BadRequest(ValidationMessages.TitleRequired)),
     slug: joi.string().error(httpError.BadRequest(ValidationMessages.InvalidSlug)),
     icon: joi.string().error(httpError.BadRequest(ValidationMessages.InvalidIcon)),
+    photo: joi.string().optional().error(httpError.BadRequest(ValidationMessages.InvalidPhoto)),
     parent: joi.string().optional().pattern(MongoIDPattern).error(httpError.BadRequest(ValidationMessages.InvalidId)),
     parents: joi.string().optional().pattern(MongoIDPattern).error(httpError.BadRequest(ValidationMessages.InvalidId))
 

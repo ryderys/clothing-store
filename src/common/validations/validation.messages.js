@@ -7,6 +7,7 @@ const ValidationMessages = {
     InvalidTitle: "نام وارد شده صحیح نمیباشد",
     InvalidSlug: "نام اسلاگ وارد شده صحیح نمیباشد",
     InvalidIcon: " ایکون وارد شده صحیح نمیباشد",
+    InvalidPhoto: "تصویر ارسال شده صحیح نمیباشد",
     InvalidId: "شناسه ارسال شده صحیح نمیباشد",
     InvalidKey: "کلید واژه ارسال شده صحیح نمیباشد",
     InvalidType: "نوع ویژگی ارسال شده صحیح نمیباشد",
