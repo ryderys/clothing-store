@@ -17,9 +17,7 @@ const createProductSchema = joi.object({
             joi.number(),
             joi.boolean(),
             joi.array().items(joi.string())
-        )).error(httpError.BadRequest(ValidationMessages.InvalidType)),
-    filename: joi.string().regex(/(\.png|\.jpg|\.webp|\.jpeg)$/).error(httpError.BadRequest(ValidationMessages.InvalidFilename)),
-    fileUploadPath: joi.allow()
+        )).error(httpError.BadRequest(ValidationMessages.InvalidType))
 })
 const updateProductSchema = joi.object({
     title: joi.string().min(3).max(30).optional().error(httpError.BadRequest(ValidationMessages.InvalidTitle)),
@@ -37,9 +35,7 @@ const updateProductSchema = joi.object({
             joi.boolean(),
             joi.array().items(joi.string())
         )).optional().error(httpError.BadRequest(ValidationMessages.InvalidType)),
-    filename: joi.string().regex(/(\.png|\.jpg|\.webp|\.jpeg)$/).optional().error(httpError.BadRequest(ValidationMessages.InvalidFilename)),
-    fileUploadPath: joi.allow().optional(),
-    // images: joi.array().items(joi.string()).optional()
+    images: joi.array().items(joi.string()).optional()
 })
 
 module.exports = {

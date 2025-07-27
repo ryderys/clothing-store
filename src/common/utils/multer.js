@@ -26,6 +26,19 @@ const uploadFile = multer({
 
 // Helper function to upload file to S3
 const uploadToS3 = async (file, folder = 'clothing-store-image/products') => {
+    // Check if required environment variables are set
+    if (!process.env.S3_BUCKET_NAME) {
+        throw new HttpError.InternalServerError("S3 configuration error: Bucket name not provided");
+    }
+    
+    if (!process.env.S3_ENDPOINT) {
+        throw new HttpError.InternalServerError("S3 configuration error: Endpoint not provided");
+    }
+
+    if (!process.env.S3_ACCESS_KEY || !process.env.S3_SECRET_KEY) {
+        throw new HttpError.InternalServerError("S3 configuration error: Credentials not provided");
+    }
+
     const format = path.extname(file.originalname);
     if (!format) {
         throw new HttpError.BadRequest("Invalid file format");
@@ -57,6 +70,11 @@ const uploadToS3 = async (file, folder = 'clothing-store-image/products') => {
 
 // Helper function to delete file from S3
 const deleteFromS3 = async (key) => {
+    // Check if required environment variables are set
+    if (!process.env.S3_BUCKET_NAME) {
+        throw new HttpError.InternalServerError("S3 configuration error: Bucket name not provided");
+    }
+
     const params = {
         Bucket: process.env.S3_BUCKET_NAME,
         Key: decodeURI(key)
