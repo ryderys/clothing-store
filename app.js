@@ -14,6 +14,15 @@ const connectDB = require("./src/config/database.config");
 
 dotenv.config()
 
+// Debug environment variables after loading
+console.log("App startup - Environment check:", {
+    NODE_ENV: process.env.NODE_ENV,
+    S3_BUCKET_NAME: process.env.S3_BUCKET_NAME ? "SET" : "NOT SET",
+    S3_ENDPOINT: process.env.S3_ENDPOINT ? "SET" : "NOT SET",
+    S3_ACCESS_KEY: process.env.S3_ACCESS_KEY ? "SET" : "NOT SET",
+    S3_SECRET_KEY: process.env.S3_SECRET_KEY ? "SET" : "NOT SET"
+});
+
 // Connect to MongoDB
 connectDB().catch(err => {
     console.error('Failed to connect to MongoDB:', err);
