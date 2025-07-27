@@ -173,17 +173,19 @@ class UserAuthController {
       if (!userId) throw new httpError.BadRequest(AuthMessages.LogIn);
       await UserModel.findByIdAndUpdate(userId, { refreshToken: null });
       
+      const isProduction = process.env.NODE_ENV === "production";
+      
       res.clearCookie(CookieNames.AccessToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        domain: isProduction ? "clothing-store.liara.run" : undefined
       })
       .clearCookie(CookieNames.RefreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        domain: isProduction ? "clothing-store.liara.run" : undefined
       });
 
       return res
@@ -230,20 +232,22 @@ class UserAuthController {
   }
 
   setToken(res, accessToken, refreshToken) {
+    const isProduction = process.env.NODE_ENV === "production";
+    
     return res
       .cookie(CookieNames.AccessToken, accessToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: isProduction, // Only require HTTPS in production
+        sameSite: isProduction ? "none" : "lax", // Use lax for development
         maxAge: 1000 * 60 * 60,
-        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+        domain: isProduction ? "clothing-store.liara.run" : undefined // Update this to your production domain
       })  
       .cookie(CookieNames.RefreshToken, refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: isProduction, // Only require HTTPS in production
+        sameSite: isProduction ? "none" : "lax", // Use lax for development
         maxAge: 1000 * 60 * 60 * 24 * 7, //7 days
-        domain: process.env.NODE_ENV === "production" ? "clothing-store.liara.run" : undefined
+        domain: isProduction ? "clothing-store.liara.run" : undefined // Update this to your production domain
       });
   }
 }

@@ -26,20 +26,6 @@ const uploadFile = multer({
 
 // Helper function to upload file to S3
 const uploadToS3 = async (file, folder = 'clothing-store-image/products') => {
-    // Temporary debug to check environment variables
-    console.log("S3 Environment check:", {
-        S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
-        S3_ENDPOINT: process.env.S3_ENDPOINT,
-        S3_ACCESS_KEY: process.env.S3_ACCESS_KEY ? "SET" : "NOT SET",
-        S3_SECRET_KEY: process.env.S3_SECRET_KEY ? "SET" : "NOT SET"
-    });
-    
-    // Check all environment variables that start with S3_
-    const s3EnvVars = Object.keys(process.env).filter(key => key.startsWith('S3_'));
-    console.log("All S3 environment variables:", s3EnvVars);
-    console.log("S3_BUCKET_NAME value:", process.env.S3_BUCKET_NAME);
-    console.log("S3_BUCKET_NAME type:", typeof process.env.S3_BUCKET_NAME);
-
     // Check if required environment variables are set
     if (!process.env.S3_BUCKET_NAME) {
         throw new HttpError.InternalServerError("S3 configuration error: Bucket name not provided");
