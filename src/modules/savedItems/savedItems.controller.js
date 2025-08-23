@@ -186,7 +186,13 @@ class SavedItemsController{
             const userId = req.user._id
             const savedItems = await savedItemsModel.findOne({userId}).populate('items.productId')
             if(!savedItems){
-                throw new httpError.NotFound(SavedItemMessages.ItemNotInSaved)
+                return res.status(StatusCodes.OK).json({
+                    statusCode: StatusCodes.OK,
+                    data: {
+                        savedItems: { items: [] },
+                        message: "No saved items found"
+                    }
+                });
             }
             return res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,
