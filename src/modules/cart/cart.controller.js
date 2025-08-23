@@ -43,7 +43,6 @@ class CartController{
                 }
                 await cart.save()
 
-            await this.validateCart(cart)
             await this.expireCart(cart, Date.now() + 30 * 60 * 1000)
 
             return this.sendCartResponse(res, cart, CartMessages.AddedToCartSuccess)
@@ -107,7 +106,6 @@ class CartController{
             }
 
             await cart.save()
-            await this.validateCart(cart)
             await this.expireCart(cart, Date.now() + 30 * 60 * 1000)
             
 
@@ -128,7 +126,6 @@ class CartController{
         if(!cart){
            throw new httpError.NotFound(CartMessages.CartNotFound)
         }
-        await this.validateCart(cart)
 
         return this.sendCartResponse(res, cart)
        } catch (error) {

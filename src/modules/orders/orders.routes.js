@@ -5,8 +5,8 @@ const OrderModel = require("./orders.model")
 
 const router = require("express").Router()
 
-// general permissions check first , then ownership check if needed
-router.post('/', Authorization, checkPermission('order', 'create'), ordersController.createOrder)
+// Note: Orders are created through the payment module, not directly
+// router.post('/', Authorization, checkPermission('order', 'create'), ordersController.createOrder)
 
 router.get('/',  Authorization,  checkPermission('order', 'read'),checkOwnership(OrderModel, 'order', 'readOwn'),ordersController.getUserOrders)
 
@@ -18,7 +18,8 @@ router.put('/:orderId/cancel',  Authorization,  checkOwnership(OrderModel, 'orde
 
 router.get('/:orderId',  Authorization, checkPermission('order', 'read'),  checkOwnership(OrderModel, 'order', 'readOwn'),ordersController.getOrderById)
 
-// router.put('/:orderId/status', ordersController.updateOrderStatus)
+// Admin route to update order status
+router.put('/:orderId/status', Authorization, checkPermission('order', 'update'), ordersController.updateOrderStatus)
 
 module.exports = {
     OrderRouter: router

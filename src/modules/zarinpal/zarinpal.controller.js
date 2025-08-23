@@ -10,19 +10,24 @@ async function zarinaplRequest(amount, user, description = "خرید محصول"
             throw createHttpError.BadRequest("Invalid amount");
         }
 
-        // Convert amount to Rials and ensure it's an integer
-        const amountInRials = Math.round(amount * 10);
+        // Convert amount to Tomans (Zarinpal expects Tomans, not Rials)
+        // If amount is already in Tomans, use as is; if in Rials, divide by 10
+        const amountInTomans = Math.round(amount);
 
-        const result = await axios.post(process.env.ZARINPAL_REQUEST_URL, {
+        const requestData = {
             merchant_id: process.env.ZARINPAL_MERCHANT_ID,
             callback_url: process.env.ZARINPAL_CALLBACK_URL,
-            amount: amountInRials,
+            amount: amountInTomans,
             description,
             metadata: {
                 email: user?.email,
                 mobile: user?.mobile
             }
-        }, {
+        };
+
+        logger.info("Zarinpal request data:", requestData);
+
+        const result = await axios.post(process.env.ZARINPAL_REQUEST_URL, requestData, {
             headers: {
                 "Content-Type": "application/json"
             }
@@ -37,9 +42,23 @@ async function zarinaplRequest(amount, user, description = "خرید محصول"
             payment_url: `${process.env.ZARINPAL_GATEWAY_URL}/${result.data.data.authority}`
         };
     } catch (error) {
-        logger.error("Zarinpal request error:", error);
+        logger.error("Zarinpal request error:", {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            data: error.response?.data,
+            config: {
+                url: error.config?.url,
+                method: error.config?.method,
+                data: error.config?.data
+            }
+        });
+        
         if (error.response?.data) {
-            throw createHttpError.BadRequest(error.response.data.message || "Payment request failed");
+            const errorMessage = error.response.data.errors ? 
+                Object.values(error.response.data.errors).flat().join(', ') : 
+                (error.response.data.message || "Payment request failed");
+            throw createHttpError.BadRequest(`Zarinpal Error: ${errorMessage}`);
         }
         throw createHttpError.InternalServerError("Payment service unavailable");
     }
@@ -51,13 +70,13 @@ async function zarinpalVerify(amount, authority) {
             throw createHttpError.BadRequest("Invalid amount or authority");
         }
 
-        // Convert amount to Rials and ensure it's an integer
-        const amountInRials = Math.round(amount * 10);
+        // Convert amount to Tomans (Zarinpal expects Tomans, not Rials)
+        const amountInTomans = Math.round(amount);
 
         const result = await axios.post(process.env.ZARINPAL_VERIFY_URL, {
             merchant_id: process.env.ZARINPAL_MERCHANT_ID,
             authority,
-            amount: amountInRials,
+            amount: amountInTomans,
         }, {
             headers: {
                 'Content-Type': 'application/json'

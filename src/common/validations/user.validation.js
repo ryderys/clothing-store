@@ -1,5 +1,13 @@
 const Joi = require("joi");
 
+const addressSchema = Joi.object({
+    street: Joi.string().trim().optional(),
+    city: Joi.string().trim().optional(),
+    state: Joi.string().trim().optional(),
+    postalCode: Joi.string().trim().optional(),
+    country: Joi.string().trim().optional()
+});
+
 const userValidationSchema = Joi.object({
     fullName: Joi.string().trim().optional(),
     username: Joi.string().lowercase().trim().optional(),
@@ -14,17 +22,18 @@ const userValidationSchema = Joi.object({
     cart: Joi.string().optional(),
     savedItems: Joi.string().optional(),
     products: Joi.array().items(Joi.string()).default([]),
-    role: Joi.string().valid('admin', 'user', 'quest').default('user')
-})
+    role: Joi.string().valid('admin', 'user', 'quest').default('user'),
+    address: addressSchema.optional()
+});
 
 const updateUserValidationSchema = Joi.object({
     fullName: Joi.string().trim().optional(),
     username: Joi.string().lowercase().trim().optional(),
     email: Joi.string().email().lowercase().trim().optional(),
-
-})
+    address: addressSchema.optional()
+});
 
 module.exports = {
     userValidationSchema,
     updateUserValidationSchema
-}
+};

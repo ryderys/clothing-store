@@ -2,15 +2,12 @@ const autoBind = require("auto-bind");
 const { StatusCodes } = require("http-status-codes");
 const httpError = require("http-errors");
 const { PaymentModel } = require("./payment.model");
-const cartController = require("../cart/cart.controller");
 const { logger } = require("../../common/utils/logger");
 const OrderModel = require("../orders/orders.model");
-const { UserModel } = require("../user/user.model");
 const { zarinaplRequest, zarinpalVerify } = require("../zarinpal/zarinpal.controller");
-const CartModel = require("../cart/cart.model");
-const { config } = require("dotenv");
+const orderController = require("../orders/orders.controller");
+const cartProcessingService = require("../../common/services/cartProcessing.service");
 
-config()
 class PaymentController {
     constructor() {
         autoBind(this);
@@ -19,68 +16,51 @@ class PaymentController {
     async handleCartPayment(req, res, next) {
         try {
             const userId = req.user._id;
+            const { cartId } = req.body;
             
-            // Validate user profile
-            const user = await UserModel.findById(userId);
-            if (!user.username || !user.email) {
-                throw new httpError.BadRequest("Please complete your profile before making a payment");
+            if (!cartId) {
+                throw new httpError.BadRequest("Cart ID is required");
             }
-
-            // Get user's cart with populated product data
-            const cart = await CartModel.findOne({ userId }).populate('items.productId');
             
-            if (!cart || !cart.items || cart.items.length === 0) {
-                throw new httpError.BadRequest("Cart is empty");
-            }
+            // Use centralized service to process cart
+            const { cart, validItems, totalAmount, stockReserved } = await cartProcessingService.processCartForPayment(cartId, userId);
 
-            // Calculate total amount
-            const totalAmount = cart.items.reduce((total, item) => {
-                if (!item.productId || !item.productId.price) {
-                    throw new httpError.BadRequest("Invalid product data in cart");
-                }
-                return total + (item.productId.price * item.quantity);
-            }, 0);
-
-            // Create order first
-            const order = await OrderModel.create({
-                userId,
-                items: cart.items.map(item => ({
-                    productId: item.productId._id,
-                    quantity: item.quantity,
-                    price: item.productId.price
-                })),
-                totalAmount,
-                status: 'Pending'
-            });
-
-            // Create payment record
-            const payment = await PaymentModel.create({
-                amount: totalAmount,
-                userId,
-                orderId: order._id,
-                status: false
-            });
+            // Create order using the order controller
+            const order = await orderController.createOrderFromCart(userId, validItems, totalAmount);
 
             try {
-                const result = await zarinaplRequest(payment.amount, user);
+                // Initiate Zarinpal payment first to get authority
+                const result = await zarinaplRequest(totalAmount, req.user);
                 if (!result?.authority) {
                     throw new httpError.BadRequest("Failed to initiate payment");
                 }
-                
-                payment.authority = result.authority;
-                await payment.save();
+
+                // Create payment record with authority
+                const payment = await PaymentModel.create({
+                    amount: totalAmount,
+                    userId,
+                    orderId: order._id,
+                    cartId: cartId,
+                    status: false,
+                    authority: result.authority
+                });
 
                 return res.status(StatusCodes.OK).json({
                     statusCode: StatusCodes.OK,
                     data: {
                         payment_url: result.payment_url,
-                        authority: result.authority
+                        authority: result.authority,
+                        orderId: order._id,
+                        cartId: cartId
                     }
                 });
             } catch (error) {
                 // Clean up if payment initiation fails
-                await PaymentModel.findByIdAndDelete(payment._id);
                 await OrderModel.findByIdAndDelete(order._id);
+                
+                // Restore product stock since order failed
+                await cartProcessingService.restoreStock(stockReserved);
+                
                 throw error;
             }
 
@@ -122,14 +102,31 @@ class PaymentController {
                 await payment.save();
                 await order.save();
 
-                // Clear cart
-                await cartController.clearCart(req, res, next);
+                // Clear the specific cart that was used for this payment
+                // Only clear after successful order processing
+                await cartProcessingService.clearCart(payment.cartId);
 
                 return res.redirect(`${process.env.FRONTEND_URL}/payment?status=success`);
             } catch (error) {
                 // Clean up on verification failure
+                // Get order data before deleting it for stock restoration
+                const order = await OrderModel.findById(payment.orderId);
+                
                 await PaymentModel.findByIdAndDelete(payment._id);
                 await OrderModel.findByIdAndDelete(payment.orderId);
+                
+                // Restore product stock since order failed
+                if (order) {
+                    // Convert order items back to stock restoration format
+                    // We need to restore stock to what it was before the order
+                    const stockReserved = order.items.map(item => ({
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        originalStock: item.quantity // This will be added back to current stock
+                    }));
+                    await cartProcessingService.restoreStock(stockReserved);
+                }
+                
                 return res.redirect(`${process.env.FRONTEND_URL}/payment?status=failure`);
             }
 

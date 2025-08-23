@@ -18,7 +18,15 @@ const UserSchema = new mongoose.Schema({
     cart: {type: Schema.Types.ObjectId, ref: "Cart" },
     savedItems: {type: Schema.Types.ObjectId, ref: "SavedItems" },
     products: {type: [ Schema.Types.ObjectId], ref: 'Product', default: []},
-    role: {type: String, enum: ['admin', 'user', 'quest'], default: 'user'}
+    role: {type: String, enum: ['admin', 'user', 'quest'], default: 'user'},
+    // Address fields for delivery
+    address: {
+        street: {type: String, trim: true},
+        city: {type: String, trim: true},
+        state: {type: String, trim: true},
+        postalCode: {type: String, trim: true},
+        country: {type: String, trim: true, default: 'Iran'}
+    }
 }, {
     toJSON: {
         virtuals: true
