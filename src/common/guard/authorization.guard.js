@@ -8,6 +8,18 @@ const Authorization = async(req, res, next) => {
         // Retrieve the token from cookies
         const token = req?.cookies?.access_token
         
+        // Debug logging for production troubleshooting
+        if (process.env.NODE_ENV === "production") {
+            console.log("Authorization Debug:", {
+                hasCookies: !!req.cookies,
+                cookieKeys: req.cookies ? Object.keys(req.cookies) : [],
+                hasAccessToken: !!token,
+                userAgent: req.headers['user-agent'],
+                origin: req.headers['origin'],
+                referer: req.headers['referer']
+            });
+        }
+        
         // If token is not found, throw an unauthorized error
         if(!token) throw new httpError.Unauthorized(AuthMessages.LogIn)
         

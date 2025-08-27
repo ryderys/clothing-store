@@ -178,14 +178,12 @@ class UserAuthController {
       res.clearCookie(CookieNames.AccessToken, {
         httpOnly: true,
         secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
-        domain: isProduction ? "clothing-store.liara.run" : undefined
+        sameSite: isProduction ? "none" : "lax"
       })
       .clearCookie(CookieNames.RefreshToken, {
         httpOnly: true,
         secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
-        domain: isProduction ? "clothing-store.liara.run" : undefined
+        sameSite: isProduction ? "none" : "lax"
       });
 
       return res
@@ -239,15 +237,15 @@ class UserAuthController {
         httpOnly: true,
         secure: isProduction, // Only require HTTPS in production
         sameSite: isProduction ? "none" : "lax", // Use lax for development
-        maxAge: 1000 * 60 * 60,
-        domain: isProduction ? "clothing-store.liara.run" : undefined // Update this to your production domain
+        maxAge: 1000 * 60 * 60
+        // Removed domain restriction to allow cross-domain access
       })  
       .cookie(CookieNames.RefreshToken, refreshToken, {
         httpOnly: true,
         secure: isProduction, // Only require HTTPS in production
         sameSite: isProduction ? "none" : "lax", // Use lax for development
         maxAge: 1000 * 60 * 60 * 24 * 7, //7 days
-        domain: isProduction ? "clothing-store.liara.run" : undefined // Update this to your production domain
+        // Removed domain restriction to allow cross-domain access
       });
   }
 }
