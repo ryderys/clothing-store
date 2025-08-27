@@ -8,14 +8,19 @@ const ProductSchema = new mongoose.Schema({
     description: {type: String, required: true, trim: true},
     tags: {type: [String], required: true},
     category: {type: Types.ObjectId, ref: 'Category'},
-    price: {type: Number, required: true, default: 0},
-    count: {type: Number},
+    price: {type: Number, required: true, default: 0, min: 0},
+    count: {type: Number, default: 0, min: 0, validate: {
+        validator: function(v) {
+            return typeof v === 'number' && !isNaN(v) && v >= 0;
+        },
+        message: 'Count must be a valid non-negative number'
+    }},
     images: {type: [String], required: false, default: []},
     // likes: {type: [Schema.Types.ObjectId], ref: 'User', default: []},
     supplier: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     features: {type: Object, default: {}},
-    averageRating: {type: Number, default: 0},
-    reviewCount: {type: Number, default: 0},
+    averageRating: {type: Number, default: 0, min: 0, max: 5},
+    reviewCount: {type: Number, default: 0, min: 0},
 }, {
     timestamps: {createdAt: true, updatedAt: true}
 })

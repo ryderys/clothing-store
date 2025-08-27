@@ -12,7 +12,7 @@ class CartProcessingService {
         try {
             // Get cart with populated product data
             const cart = await CartModel.findOne({ _id: cartId, userId }).populate('items.productId');
-            
+            console.log(cart);
             if (!cart) {
                 throw new httpError.NotFound("Cart not found or access denied");
             }
@@ -55,10 +55,27 @@ class CartProcessingService {
 
         for (const item of cart.items) {
             try {
-                const product = await ProductModel.findById(item.productId._id);
+                // Validate item data
+                if (!item.productId || !item.quantity || item.quantity <= 0) {
+                    logger.warn(`Invalid cart item: ${JSON.stringify(item)}`);
+                    continue;
+                }
+
+                const product = await ProductModel.findById(item.productId._id || item.productId);
                 
                 if (!product) {
-                    logger.warn(`Product ${item.productId._id} not found, skipping`);
+                    logger.warn(`Product ${item.productId._id || item.productId} not found, skipping`);
+                    continue;
+                }
+
+                // Validate product data
+                if (typeof product.count !== 'number' || isNaN(product.count) || product.count < 0) {
+                    logger.warn(`Invalid product count for ${product.title}: ${product.count}`);
+                    continue;
+                }
+
+                if (typeof item.quantity !== 'number' || isNaN(item.quantity) || item.quantity <= 0) {
+                    logger.warn(`Invalid quantity for product ${product.title}: ${item.quantity}`);
                     continue;
                 }
 
@@ -67,8 +84,14 @@ class CartProcessingService {
                     continue;
                 }
 
-                // Reserve stock by deducting it
-                product.count -= item.quantity;
+                // Reserve stock by deducting it (with safety check)
+                const newCount = product.count - item.quantity;
+                if (newCount < 0) {
+                    logger.warn(`Stock calculation error for ${product.title}: ${product.count} - ${item.quantity} = ${newCount}`);
+                    continue;
+                }
+
+                product.count = newCount;
                 await product.save();
                 
                 stockReserved.push({
@@ -87,7 +110,7 @@ class CartProcessingService {
                 totalAmount += product.price * item.quantity;
                 
             } catch (error) {
-                logger.error(`Error processing cart item ${item.productId._id}: ${error.message}`);
+                logger.error(`Error processing cart item ${item.productId?._id || item.productId}: ${error.message}`);
             }
         }
 
@@ -143,6 +166,48 @@ class CartProcessingService {
             };
         } catch (error) {
             logger.error(`Error getting user delivery address: ${error.message}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Clean up corrupted product data (utility method)
+     */
+    async cleanupCorruptedProducts() {
+        try {
+            const corruptedProducts = await ProductModel.find({
+                $or: [
+                    { count: { $exists: false } },
+                    { count: null },
+                    { count: { $type: "string" } },
+                    { count: { $lt: 0 } }
+                ]
+            });
+
+            if (corruptedProducts.length === 0) {
+                logger.info("No corrupted products found");
+                return { cleaned: 0, total: 0 };
+            }
+
+            let cleaned = 0;
+            for (const product of corruptedProducts) {
+                try {
+                    // Reset count to 0 if corrupted
+                    if (!product.count || isNaN(product.count) || product.count < 0) {
+                        product.count = 0;
+                        await product.save();
+                        cleaned++;
+                        logger.info(`Cleaned corrupted product: ${product.title} (ID: ${product._id})`);
+                    }
+                } catch (error) {
+                    logger.error(`Failed to clean product ${product._id}: ${error.message}`);
+                }
+            }
+
+            logger.info(`Cleaned ${cleaned} corrupted products out of ${corruptedProducts.length}`);
+            return { cleaned, total: corruptedProducts.length };
+        } catch (error) {
+            logger.error(`Error cleaning corrupted products: ${error.message}`);
             throw error;
         }
     }
