@@ -55,6 +55,10 @@
  *                      type: string
  *                      description: the price of product
  *                      example: ""
+ *                  count:
+ *                      type: number
+ *                      description: the quantity/stock count of product
+ *                      example: 100
  *                  images:
  *                      type: array
  *                      items:
@@ -87,6 +91,10 @@
  *                      type: string
  *                      description: the price of product
  *                      example: ""
+ *                  count:
+ *                      type: number
+ *                      description: the quantity/stock count of product
+ *                      example: 100
  *                  images:
  *                      type: array
  *                      items:
