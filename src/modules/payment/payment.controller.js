@@ -45,27 +45,39 @@ class PaymentController {
                     authority: result.authority
                 });
 
+                logger.info(`Payment initiated successfully for order: ${order._id}, authority: ${result.authority}`);
+
                 return res.status(StatusCodes.OK).json({
                     statusCode: StatusCodes.OK,
                     data: {
                         payment_url: result.payment_url,
                         authority: result.authority,
                         orderId: order._id,
-                        cartId: cartId
+                        cartId: cartId,
+                        message: "Payment initiated successfully. Redirect to payment gateway."
                     }
                 });
             } catch (error) {
+                logger.error(`Payment initiation failed for order ${order._id}:`, error.message);
+                
                 // Clean up if payment initiation fails
                 await OrderModel.findByIdAndDelete(order._id);
                 
                 // Restore product stock since order failed
                 await cartProcessingService.restoreStock(stockReserved);
                 
-                throw error;
+                // Return specific error message
+                if (error.message.includes("Payment service unavailable")) {
+                    throw new httpError.ServiceUnavailable("Payment gateway is currently unavailable. Please try again later.");
+                } else if (error.message.includes("Invalid URL")) {
+                    throw new httpError.ServiceUnavailable("Payment service configuration error. Please contact support.");
+                } else {
+                    throw error;
+                }
             }
 
         } catch (error) {
-            logger.error(error);
+            logger.error("Error in handleCartPayment:", error);
             next(error);
         }
     }
