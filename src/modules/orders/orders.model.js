@@ -49,10 +49,10 @@ OrderSchema.virtual('totalItems').get(function() {
 })
 
 // Pre-save middleware to ensure valid status transitions
-OrderSchema.pre('save', function(next) {
+OrderSchema.pre('save', async function(next) {
     if (this.isModified('status')) {
         const validTransitions = {
-            'Pending': ['Processing', 'cancelled'],
+            'Pending': ['Processing', 'Shipped', 'cancelled'],
             'Processing': ['Shipped', 'cancelled'],
             'Shipped': ['out for delivery', 'cancelled'],
             'out for delivery': ['Delivered', 'cancelled'],
@@ -62,9 +62,10 @@ OrderSchema.pre('save', function(next) {
         
         if (this.isNew) return next()
         
-        const previousStatus = this.constructor.findById(this._id).status
-        if (previousStatus && !validTransitions[previousStatus]?.includes(this.status)) {
-            return next(new Error(`Invalid status transition from ${previousStatus} to ${this.status}`))
+        // FIX: Properly get previous status by fetching the document
+        const previousDoc = await this.constructor.findById(this._id)
+        if (previousDoc && !validTransitions[previousDoc.status]?.includes(this.status)) {
+            return next(new Error(`Invalid status transition from ${previousDoc.status} to ${this.status}`))
         }
     }
     next()

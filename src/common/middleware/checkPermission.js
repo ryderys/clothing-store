@@ -44,7 +44,7 @@ function checkPermission(resource, action) {
     };
 }
 
-function checkOwnership(Model, resource, action) {
+function checkOwnership(Model, resource, action, paramName = 'id') {
     return async (req, res, next) => {
        try {
             const userRole = req.user.role;
@@ -69,7 +69,7 @@ function checkOwnership(Model, resource, action) {
             } else {
                 if (action.includes('Own')) {
                     // Check if the user owns the resource
-                    const resourceId = req.params.id;
+                    const resourceId = req.params[paramName];
                     const resource = await Model.findById(resourceId);
                     if (resource && resource.userId.equals(req.user._id)) {
                         next();

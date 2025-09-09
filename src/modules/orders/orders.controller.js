@@ -174,6 +174,37 @@ class OrderController{
             next(error)
         }
     }
+
+    // Delete orders (for admin use) - can delete all orders or specific user's orders
+    async deleteOrders(req, res, next){
+        try {
+            const { userId } = req.params;
+            let query = {};
+            let message = "All orders";
+            
+            // If userId is provided, delete only that user's orders
+            if (userId) {
+                query = { userId };
+                message = `Orders for user ${userId}`;
+            }
+            
+            const result = await OrderModel.deleteMany(query)
+            
+            logger.info(`${message} deleted by admin. Deleted count: ${result.deletedCount}`);
+
+            return res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                data: {
+                    message: `Successfully deleted ${result.deletedCount} orders${userId ? ` for user ${userId}` : ''}`,
+                    deletedCount: result.deletedCount,
+                    userId: userId || null
+                }
+            })
+        } catch (error) {
+            logger.error(`Error deleting orders: ${error.message}`)
+            next(error)
+        }
+    }
 }
 
 module.exports = new OrderController()

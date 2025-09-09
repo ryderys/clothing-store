@@ -364,6 +364,17 @@
  *      requestBody:
  *          required: true
  *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      type: object
+ *                      required:
+ *                          -   status
+ *                      properties:
+ *                          status:
+ *                              type: string
+ *                              enum: ['Pending', 'Processing', 'Shipped', 'out for delivery', 'Delivered', 'cancelled']
+ *                              description: New order status
+ *                              example: "Processing"
  *              application/json:
  *                  schema:
  *                      type: object
@@ -418,6 +429,91 @@
  *      responses:
  *          410:
  *              description: "Gone - This endpoint is deprecated. Use POST /payment instead."
+ *  delete:
+ *      summary: Delete all orders (Admin only)
+ *      description: Delete all orders from the system. This is a destructive operation that cannot be undone.
+ *      tags:
+ *          -   Orders
+ *      security:
+ *          -   bearerAuth: []
+ *      responses:
+ *          200:
+ *              description: All orders deleted successfully
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              statusCode:
+ *                                  type: integer
+ *                                  example: 200
+ *                              data:
+ *                                  type: object
+ *                                  properties:
+ *                                      message:
+ *                                          type: string
+ *                                          example: "Successfully deleted 25 orders"
+ *                                      deletedCount:
+ *                                          type: integer
+ *                                          example: 25
+ *                                      userId:
+ *                                          type: string
+ *                                          nullable: true
+ *                                          example: null
+ *          401:
+ *              description: Unauthorized
+ *          403:
+ *              description: "Forbidden - Admin access required"
+ *          500:
+ *              description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /orders/user/{userId}:
+ *  delete:
+ *      summary: Delete user's orders (Admin only)
+ *      description: Delete all orders for a specific user. This is a destructive operation that cannot be undone.
+ *      tags:
+ *          -   Orders
+ *      security:
+ *          -   bearerAuth: []
+ *      parameters:
+ *          -   in: path
+ *              name: userId
+ *              type: string
+ *              description: User ID whose orders should be deleted
+ *              example: "682a32a8bc7b19944c580240"
+ *              required: true
+ *      responses:
+ *          200:
+ *              description: User's orders deleted successfully
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              statusCode:
+ *                                  type: integer
+ *                                  example: 200
+ *                              data:
+ *                                  type: object
+ *                                  properties:
+ *                                      message:
+ *                                          type: string
+ *                                          example: "Successfully deleted 5 orders for user 682a32a8bc7b19944c580240"
+ *                                      deletedCount:
+ *                                          type: integer
+ *                                          example: 5
+ *                                      userId:
+ *                                          type: string
+ *                                          example: "682a32a8bc7b19944c580240"
+ *          401:
+ *              description: Unauthorized
+ *          403:
+ *              description: "Forbidden - Admin access required"
+ *          500:
+ *              description: Internal server error
  */
 
 

@@ -175,6 +175,9 @@
  *      requestBody:
  *          required: true
  *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Update-Profile'
  *              application/json:
  *                  schema:
  *                      $ref: '#/components/schemas/Update-Profile'
